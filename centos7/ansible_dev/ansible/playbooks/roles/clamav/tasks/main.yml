@@ -1,0 +1,35 @@
+---
+# tasks file for c3_aws_clamav
+
+ - name: "Installiere EPEL-Repo"
+   yum: name=epel-release state=latest
+   become: yes
+   become_method: sudo
+   tags: install
+
+ - name: "Installiere ClamAV"
+   yum: state=present name={{ item }}
+   with_items:
+               - clamav
+               - clamav-update
+   become: yes
+   become_method: sudo
+   tags: install
+
+ - name: "Aktualisiere Viren-Signaturen"
+   command: freshclam
+   become: yes
+   become_method: sudo
+   tags: freshclam
+
+ - name: "Aktualisiere nochmal Viren-Signaturen"
+   command: freshclam
+   become: yes
+   become_method: sudo
+   tags: freshclam
+
+ - name: "Scanne HDD nach bekannten Viren"
+   command: clamscan -r /home/
+   become: yes
+   become_method: sudo
+   tags: clamscan
